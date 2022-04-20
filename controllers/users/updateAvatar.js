@@ -12,9 +12,16 @@ const updateAvatar = async (req, res) => {
   try {
     const resultUpload = path.join(avatarsDir, imageName);
     await fs.rename(tempUpload, resultUpload);
-    const avatarURL = path.join("public", "avatars", originalname);
+    const avatarURL = path.join("public", "avatars", imageName);
     Jimp.read(avatarURL).then((avatar) => {
-      return avatar.resize(256, 256).quality(60).write(avatarURL);
+      return avatar
+        .cover(
+          250,
+          250,
+          Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE
+        )
+        .quality(60)
+        .write(avatarURL);
     });
     await User.findByIdAndUpdate(req.user._id, { avatarURL });
     res.json({ avatarURL });
