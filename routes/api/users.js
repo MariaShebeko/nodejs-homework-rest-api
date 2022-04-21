@@ -1,6 +1,11 @@
 const express = require("express");
 
-const { validation, controllerWrapper, auth } = require("../../middlewares");
+const {
+  validation,
+  controllerWrapper,
+  auth,
+  upload,
+} = require("../../middlewares");
 const { users: controller } = require("../../controllers");
 const { joiSignupSchema, joiLoginSchema } = require("../../models/user");
 
@@ -21,5 +26,12 @@ router.post(
 router.get("/current", auth, controllerWrapper(controller.getCurrent));
 
 router.get("/logout", auth, controllerWrapper(controller.logout));
+
+router.patch(
+  "/avatars",
+  auth,
+  upload.single("avatar"),
+  controllerWrapper(controller.updateAvatar)
+);
 
 module.exports = router;
